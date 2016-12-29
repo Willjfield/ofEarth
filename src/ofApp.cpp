@@ -9,7 +9,8 @@ void ofApp::setup(){
 //    if(ofIsGLProgrammableRenderer()){
 //        EarthShader.load("shadersGL3/shader");
 //    }else{
-        EarthShader.load("shadersGL2/shader");
+        EarthShader.load("shadersGL2/Earth/shader");
+        AtmosphereShader.load("shadersGL2/Atmosphere/shader");
 //    }
 //#endif
     
@@ -23,11 +24,15 @@ void ofApp::setup(){
     
     ofSetSmoothLighting(true);
     
+    sunPosition = ofVec3f(0, 0, 1);
+    
     mainLight.setDiffuseColor( ofFloatColor(.85, .85, .55) );
     mainLight.setSpecularColor( ofFloatColor(1.f, 1.f, 1.f));
-    mainLight.setPosition(ofGetWidth(), ofGetHeight()*.5, 400);
+    mainLight.setPosition(sunPosition);
     mainLight.setDirectional();
     mainLight.enable();
+    
+    rotateSpeed = 1;
     
     DayEarth.load("earth.png");
     DayEarth.mirror(1, 0);
@@ -35,53 +40,90 @@ void ofApp::setup(){
     NightEarth.load("night_earth.jpg");
     NightEarth.mirror(1, 0);
     
+    NormalEarth.load("earth_normal.png");
+    NormalEarth.mirror(1, 0);
+    
     EarthMesh.setRadius( 10 );
     EarthMesh.setResolution(4);
     EarthMesh.setPosition(0,0,0);
     
+    atmosphereMesh.setRadius( 10.25 );
+    atmosphereMesh.setResolution(4);
+    atmosphereMesh.setPosition(0, 0, 0);
+    atmosphereMesh.enableTextures();
+    
     EarthMesh.enableTextures();
     EarthMesh.mapTexCoordsFromTexture(DayEarth.getTexture());
     
-    ofFbo::Settings settings;
-    settings.numSamples = 8; // also try 8, if your GPU supports it
-    settings.useDepth = true;
-    settings.width = ofGetWidth();
-    settings.height = ofGetHeight();
+//    ofFbo::Settings settings;
+//    //settings.numSamples = 8; // also try 8, if your GPU supports it
+//    settings.useDepth = false;
+//    settings.useStencil = false;
+//    settings.width = ofGetWidth();
+//    settings.height = ofGetHeight();
     
-    postFbo.allocate(settings);
+    //postFbo.allocate(settings);
+    //atmosphere.allocate(settings);
+//    atmosphere.allocate(ofGetWidth(), ofGetHeight());
+//    atmosphere.begin();
+//    ofClear(255,255,255);
+//    atmosphere.end();
     
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    EarthMesh.rotate(.1, 0, 1, 0);
+    //EarthMesh.rotate(rotateSpeed*.025, 0, 1, 0);
+    sunPosition.x = sin(ofGetFrameNum()*-.0025*rotateSpeed);
+    sunPosition.z = cos(ofGetFrameNum()*-.0025*rotateSpeed);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-   // postFbo.begin();
+    ofBackground(0);
+    //postFbo.begin();
+    
     cam.begin();
-        ofBackground(0);
+    ofEnableDepthTest();
+
     
-        ofSetColor( 255, 255, 255 );
-    
-        DayEarth.getTexture().bind();
-        NightEarth.getTexture().bind();
-        EarthShader.begin();
+        //ofSetColor( 255, 255, 255, 255 );
+        initEarthShader();
         EarthShader.setUniformTexture("tex0", DayEarth.getTexture()  , 0);
         EarthShader.setUniformTexture("tex1", NightEarth.getTexture()   , 1);
+        EarthShader.setUniformTexture("tex2", NormalEarth.getTexture()   , 2);
+        EarthShader.setUniform3f("sunDirection", sunPosition);
+        EarthShader.setUniform3f("uEyePos", cam.getPosition());
+        //cout << cam.getPosition() << endl;
             EarthMesh.draw();
-        EarthShader.end();
-        DayEarth.getTexture().unbind();
-        NightEarth.getTexture().unbind();
+        endEarthShader();
     
+        AtmosphereShader.begin();
+        AtmosphereShader.setUniform3f("uEyePos", cam.getPosition());
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        atmosphereMesh.draw();
+        AtmosphereShader.end();
     cam.end();
     //postFbo.end();
     
-    //postFbo.draw(ofVec2f(0,0));
 }
 
+void ofApp::initEarthShader(){
+    DayEarth.getTexture().bind();
+    NightEarth.getTexture().bind();
+    NormalEarth.getTexture().bind();
+    EarthShader.begin();
+}
+
+void ofApp::endEarthShader(){
+    EarthShader.end();
+    DayEarth.getTexture().unbind();
+    NightEarth.getTexture().unbind();
+    NormalEarth.getTexture().unbind();
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     

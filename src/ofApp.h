@@ -20,15 +20,27 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+    
+        void initEarthShader();
+        void endEarthShader();
 		
         ofIcoSpherePrimitive EarthMesh;
+        ofIcoSpherePrimitive atmosphereMesh;
+    
         ofLight mainLight;
+        ofVec3f sunPosition;
     
         ofImage DayEarth;
         ofImage NightEarth;
+        ofImage NormalEarth;
+    
         ofShader EarthShader;
     
+        float rotateSpeed;
+    
+        ofShader AtmosphereShader;
         ofEasyCam cam;
     
         ofFbo postFbo;
+    
 };
