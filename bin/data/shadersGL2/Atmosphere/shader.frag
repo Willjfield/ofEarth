@@ -11,8 +11,9 @@ uniform vec3 uEyePos;
 
 void main()
 {
-    float opacity = .45-pow(dot(normalize(uEyePos),vNormal),4.);
-
+    float dotSun = 1.-dot(normalize(sunDirection),vNormal)*2-1;
+    float dotCam = dot(normalize(uEyePos),vNormal)*2-1;
+    float opacity = pow(.5-abs(dotCam-.35),2.)*dotSun;
     vec4 color = vec4(.4,.7,1.,opacity);
     gl_FragColor = color;
 }

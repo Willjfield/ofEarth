@@ -101,6 +101,7 @@ void ofApp::draw(){
     
         AtmosphereShader.begin();
         AtmosphereShader.setUniform3f("uEyePos", cam.getPosition());
+        AtmosphereShader.setUniform3f("sunDirection", sunPosition);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
