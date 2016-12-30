@@ -39,6 +39,8 @@ class ofApp : public ofBaseApp{
         float rotateSpeed;
     
         ofShader AtmosphereShader;
+    
+        ofVec3f randomVec;
         ofEasyCam cam;
     
         ofFbo postFbo;

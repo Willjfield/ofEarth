@@ -55,6 +55,8 @@ void ofApp::setup(){
     EarthMesh.enableTextures();
     EarthMesh.mapTexCoordsFromTexture(DayEarth.getTexture());
     
+    randomVec = ofVec3f(ofRandom(1), ofRandom(1), ofRandom(1));
+    
 //    ofFbo::Settings settings;
 //    //settings.numSamples = 8; // also try 8, if your GPU supports it
 //    settings.useDepth = false;
@@ -76,6 +78,13 @@ void ofApp::update(){
     //EarthMesh.rotate(rotateSpeed*.025, 0, 1, 0);
     sunPosition.x = sin(ofGetFrameNum()*-.0025*rotateSpeed);
     sunPosition.z = cos(ofGetFrameNum()*-.0025*rotateSpeed);
+    float t = ofGetFrameNum() * 0.001;
+    float Nx = ofNoise( t );
+    float Ny = ofNoise( t + 100);
+    float Nz = ofNoise( t + 1000);
+    randomVec.x=(Nx/2);
+    randomVec.y=1+(Ny/2);
+    randomVec.z=(Nz/2);
 }
 
 //--------------------------------------------------------------
@@ -99,6 +108,8 @@ void ofApp::draw(){
         AtmosphereShader.begin();
         AtmosphereShader.setUniform3f("uEyePos", cam.getPosition());
         AtmosphereShader.setUniform3f("sunDirection", sunPosition);
+        AtmosphereShader.setUniform1f("frameCount", ofGetFrameNum());//("sunDirection", sunPosition);
+        AtmosphereShader.setUniform3f("randomVec", randomVec);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
