@@ -24,7 +24,7 @@ void ofApp::setup(){
     
     ofSetSmoothLighting(true);
     
-    sunPosition = ofVec3f(0, 0, 1);
+    sunPosition = ofVec3f(0, .235, 1);
     
     mainLight.setDiffuseColor( ofFloatColor(.85, .85, .55) );
     mainLight.setSpecularColor( ofFloatColor(1.f, 1.f, 1.f));

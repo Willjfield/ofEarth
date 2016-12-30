@@ -27,9 +27,11 @@ void main()
 
     //vec4 aurora = vec4(auroraColor,dotPoles*.5);
     vec4 airColor = vec4(.4,.5,1.,opacity);
-    float psudo_random_opacity = 1.-clamp(dotRandom*abs(cos(abs(dotPoles*dotRandom*.7+frameCount/1000.)-5.)+abs(abs(sin(dotRandom*.25+frameCount/500.)))),.3,.4);
+    float psudo_random_opacity = .9-clamp(dotRandom*abs(cos(abs(dotPoles*dotRandom*.5+frameCount/1000.)-5.)+abs(abs(sin(dotRandom*.35+frameCount/500.)))),.25,.3);
     float noise_opacity = dotRandom;
-    vec4 auroraColor = vec4(.2,1.,.2,psudo_random_opacity);
+    vec4 auroraColor = vec4(.2,1.,.2,pow(psudo_random_opacity,4.));
+//varying vec4 gl_TexCoord[2];
+
 
     vec4 air_aurora_mix = mix(airColor,auroraColor,dotPoles);
 
