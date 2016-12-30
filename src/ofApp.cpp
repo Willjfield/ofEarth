@@ -85,10 +85,7 @@ void ofApp::draw(){
     //postFbo.begin();
     
     cam.begin();
-    ofEnableDepthTest();
-
-    
-        //ofSetColor( 255, 255, 255, 255 );
+        ofEnableDepthTest();
         initEarthShader();
         EarthShader.setUniformTexture("tex0", DayEarth.getTexture()  , 0);
         EarthShader.setUniformTexture("tex1", NightEarth.getTexture()   , 1);
