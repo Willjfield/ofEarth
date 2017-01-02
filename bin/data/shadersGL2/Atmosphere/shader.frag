@@ -100,14 +100,10 @@ void main()
     float dotCam = dot(normalize(uEyePos),vNormal)*2-1;
     float opacity = pow(.7-abs(dotCam-.35),2.)*dotSun;
 
-    //vec4 aurora = vec4(auroraColor,dotPoles*.5);
+    // vec3 reflected_sunlight = reflect(-normalize(sunDirection),normalize(vNormal));
+    // float specular = clamp(pow(dot(reflected_sunlight,normalize(uEyePos)),32.),0.,.5)*dotSun;
+
     vec4 airColor = vec4(.4,.5,1.,opacity);
-    //float psudo_random_opacity = .9-clamp(dotRandom*abs(cos(abs(dotPoles*dotRandom*.5+frameCount/1000.)-5.)+abs(abs(sin(dotRandom*.35+frameCount/500.)))),.25,.3);
-    //float noise_opacity = dotRandom;
-    //float noise_opacity = clamp(1.-pow(snoise(vNormal.xz*3.+frameCount/1000),.3),.3,.4);
-    //float psrd_opactiy = psrdnoise(vNormal.xz, vNormal.xz, frameCount/1000.).x;
-    //float sr_noise = srnoise(vNormal.xz,1.);
-    //float p_noise = perlin(vNormal.xz*100., frameCount/10., 10.);
     float s_noise = 1.-abs(snoise(vec3(vNormal.x*2.,frameCount/1000.,vNormal.z*2.)));
     vec4 auroraColor = vec4(.2,1.,.2,s_noise/*pow(psudo_random_opacity,4.)*/);
 

@@ -37,7 +37,11 @@ void main()
     // convert to 0 to 1 for mixing
     float mixAmount = cosineAngleSunToNormal*0.5 + 1.;
 
-    vec4 color = mix(dayColor,vec4(nightColor.rgb*.5,1.0),mixAmount)+Diffuse;
+    float dotSun = 1.-dot(normalize(sunDirection),vNormal)*2-1;
+    vec3 reflected_sunlight = reflect(-normalize(sunDirection),normalize(vNormal));
+    float specular = clamp(pow(dot(reflected_sunlight,normalize(uEyePos)),32.),0.,.35)*dotSun;
+
+    vec4 color = mix(dayColor,vec4(nightColor.rgb*.5,1.0),mixAmount)+Diffuse+specular;
     //the calculation which brings it all together
     color.a = 1.;
     gl_FragColor = color;
