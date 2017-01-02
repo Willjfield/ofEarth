@@ -105,6 +105,7 @@ void main()
 
     vec4 airColor = vec4(.4,.5,1.,opacity);
     float s_noise = 1.-abs(snoise(vec3(vNormal.x*2.,frameCount/1000.,vNormal.z*2.)));
+    s_noise*=(1.-dotSun);
     vec4 auroraColor = vec4(.2,1.,.2,s_noise/*pow(psudo_random_opacity,4.)*/);
 
     vec4 air_aurora_mix = mix(airColor,auroraColor,dotPoles);

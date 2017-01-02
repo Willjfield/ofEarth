@@ -43,6 +43,19 @@ void ofApp::setup(){
     NormalEarth.load("earth_normal.png");
     NormalEarth.mirror(1, 0);
     
+    SpecularEarth.load("earth_specular.jpg");
+    SpecularEarth.mirror(1,0);
+    
+    CloudEarth.load("earth_clouds.jpg");
+    CloudEarth.mirror(1,0);
+    //CloudEarth.setTextureWrap(GL_REPEAT,GL_REPEAT);
+    //CloudEarth.getTexture().Settings.wrapModeHorizontal = 1;
+    //CloudEarth.getTexture().ofTextureSetWrap(GL_REPEAT);
+    CloudEarth.getTexture().setTextureWrap(GL_REPEAT,GL_REPEAT);
+    ofSetTextureWrap(GL_REPEAT,GL_REPEAT); //doesn't work
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //doesn't work
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //doesn't work
+    
     EarthMesh.setRadius( 10 );
     EarthMesh.setResolution(4);
     EarthMesh.setPosition(0,0,0);
@@ -99,8 +112,12 @@ void ofApp::draw(){
         EarthShader.setUniformTexture("tex0", DayEarth.getTexture()  , 0);
         EarthShader.setUniformTexture("tex1", NightEarth.getTexture()   , 1);
         EarthShader.setUniformTexture("tex2", NormalEarth.getTexture()   , 2);
+        EarthShader.setUniformTexture("tex3", SpecularEarth.getTexture()   , 3);
+        EarthShader.setUniformTexture("tex4", CloudEarth.getTexture()   , 4);
+    
         EarthShader.setUniform3f("sunDirection", sunPosition);
         EarthShader.setUniform3f("uEyePos", cam.getPosition());
+        EarthShader.setUniform1f("frameCount", ofGetFrameNum());
         //cout << cam.getPosition() << endl;
             EarthMesh.draw();
         endEarthShader();
@@ -154,12 +171,12 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    ofHideCursor();
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    ofShowCursor();
 }
 
 //--------------------------------------------------------------

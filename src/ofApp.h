@@ -33,6 +33,8 @@ class ofApp : public ofBaseApp{
         ofImage DayEarth;
         ofImage NightEarth;
         ofImage NormalEarth;
+        ofImage SpecularEarth;
+        ofImage CloudEarth;
     
         ofShader EarthShader;
     
