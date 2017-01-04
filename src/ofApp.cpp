@@ -32,7 +32,7 @@ void ofApp::setup(){
     mainLight.setDirectional();
     mainLight.enable();
     
-    rotateSpeed = 1;
+    rotateSpeed = .5;
     
     DayEarth.load("earth.png");
     DayEarth.mirror(1, 0);
@@ -48,13 +48,6 @@ void ofApp::setup(){
     
     CloudEarth.load("earth_clouds.jpg");
     CloudEarth.mirror(1,0);
-    //CloudEarth.setTextureWrap(GL_REPEAT,GL_REPEAT);
-    //CloudEarth.getTexture().Settings.wrapModeHorizontal = 1;
-    //CloudEarth.getTexture().ofTextureSetWrap(GL_REPEAT);
-    CloudEarth.getTexture().setTextureWrap(GL_REPEAT,GL_REPEAT);
-    ofSetTextureWrap(GL_REPEAT,GL_REPEAT); //doesn't work
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); //doesn't work
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); //doesn't work
     
     EarthMesh.setRadius( 10 );
     EarthMesh.setResolution(4);
@@ -68,22 +61,6 @@ void ofApp::setup(){
     EarthMesh.enableTextures();
     EarthMesh.mapTexCoordsFromTexture(DayEarth.getTexture());
     
-    randomVec = ofVec3f(ofRandom(1), ofRandom(1), ofRandom(1));
-    
-//    ofFbo::Settings settings;
-//    //settings.numSamples = 8; // also try 8, if your GPU supports it
-//    settings.useDepth = false;
-//    settings.useStencil = false;
-//    settings.width = ofGetWidth();
-//    settings.height = ofGetHeight();
-    
-    //postFbo.allocate(settings);
-    //atmosphere.allocate(settings);
-//    atmosphere.allocate(ofGetWidth(), ofGetHeight());
-//    atmosphere.begin();
-//    ofClear(255,255,255);
-//    atmosphere.end();
-    
 }
 
 //--------------------------------------------------------------
@@ -91,20 +68,12 @@ void ofApp::update(){
     //EarthMesh.rotate(rotateSpeed*.025, 0, 1, 0);
     sunPosition.x = sin(ofGetFrameNum()*-.0025*rotateSpeed);
     sunPosition.z = cos(ofGetFrameNum()*-.0025*rotateSpeed);
-    float t = ofGetFrameNum() * 0.001;
-    float Nx = ofNoise( t );
-    float Ny = ofNoise( t + 100);
-    float Nz = ofNoise( t + 1000);
-    randomVec.x=(Nx/2);
-    randomVec.y=1+(Ny/2);
-    randomVec.z=(Nz/2);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
     ofBackground(0);
-    //postFbo.begin();
     
     cam.begin();
         ofEnableDepthTest();
@@ -126,14 +95,12 @@ void ofApp::draw(){
         AtmosphereShader.setUniform3f("uEyePos", cam.getPosition());
         AtmosphereShader.setUniform3f("sunDirection", sunPosition);
         AtmosphereShader.setUniform1f("frameCount", ofGetFrameNum());//("sunDirection", sunPosition);
-        AtmosphereShader.setUniform3f("randomVec", randomVec);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
         atmosphereMesh.draw();
         AtmosphereShader.end();
     cam.end();
-    //postFbo.end();
     
 }
 

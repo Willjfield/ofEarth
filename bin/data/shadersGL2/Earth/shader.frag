@@ -74,6 +74,10 @@ float snoise(vec3 v){
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
+float map(float value, float inMin, float inMax, float outMin, float outMax) {
+  return outMin + (outMax - outMin) * (value - inMin) / (inMax - inMin);
+}
+
 #extension GL_ARB_texture_rectangle : enable 
 // this is how we receive the texture
 varying vec2 texCoord;  
@@ -99,7 +103,7 @@ void main()
     vec3 L = normalize(bumpDir) * 2.0 - 1.0;
 
     //Calculate Diffuse
-    float Diffuse = (dot(N, L)-0.5)*.25;
+    float Diffuse = (dot(N, L)-0.5)*.01;
 
 	//Load Textures
 	vec4 dayColor = texture2DRect(tex0, texCoord);
@@ -117,7 +121,14 @@ void main()
     //Calculate specular
     float dotSun = 1.-dot(normalize(sunDirection),vNormal)*2-1;
     vec3 reflected_sunlight = reflect(-normalize(sunDirection),normalize(vNormal));
-    float specular = clamp(pow(dot(reflected_sunlight,normalize(uEyePos)),32.),0.,.35)*dotSun;
+    float sun_amount = dot(normalize(reflected_sunlight),normalize(uEyePos));
+    //sun_amount = clamp(sun_amount,.8,1.);
+    sun_amount = clamp(sun_amount,-1.,-.9)*-1;
+    sun_amount = map(sun_amount, .9, 1., .0, .5);
+    sun_amount = pow(sun_amount,2.);
+    //float specular = clamp(pow(),8.),0.,.4)*dotSun;
+    float specular = sun_amount*dotSun;
+    
     //map specular to image
     vec4 specularMap = texture2DRect(tex3, texCoord*2.);
     specular*=(1.-specularMap.r);

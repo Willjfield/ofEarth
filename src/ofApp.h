@@ -42,9 +42,6 @@ class ofApp : public ofBaseApp{
     
         ofShader AtmosphereShader;
     
-        ofVec3f randomVec;
         ofEasyCam cam;
-    
-        ofFbo postFbo;
     
 };
